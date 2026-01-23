@@ -1,0 +1,239 @@
+* {
+  font-family: "Segoe UI", Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+.bajaj-login {
+  display: flex;
+  /* min-width: auto; */
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(
+    90deg,
+    #f4f6f8 0%,
+    #eef3f7 50%,
+    #e6f0f8 100%
+  );
+}
+
+/* LEFT */
+.login-left {
+  width: 45%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+   background: linear-gradient(
+    180deg,
+    #f3f8fc 0%,
+    #e8f1f9 50%,
+    #dceaf6 100%
+  );
+}
+
+.login-card {
+  background: #ffffff;
+  width: 420px;
+  padding: 32px;
+  border-radius: 14px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.15);
+}
+
+.login-card h2 {
+  margin-bottom: 18px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.account-tabs {
+  display: flex;
+  gap: 18px;
+  font-size: 14px;
+  margin-bottom: 22px;
+}
+
+.account-tabs span {
+  cursor: pointer;
+  color: #333;
+}
+
+.account-tabs .active {
+  color: #ff6a00;
+  border-bottom: 2px solid #ff6a00;
+  padding-bottom: 4px;
+}
+
+.account-tabs .help {
+  margin-left: auto;
+  color: #ff6a00;
+  font-weight: 500;
+}
+
+.login-card label {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.login-card input {
+  width: 100%;
+  padding: 13px;
+  margin: 8px 0;
+  border-radius: 6px;
+  border: 1px solid #cfcfcf;
+  font-size: 14px;
+}
+
+.login-card small {
+  font-size: 12px;
+  color: #6b6b6b;
+}
+
+.login-card button {
+  width: 100%;
+  background: linear-gradient(90deg, #ff6a00, #ff8f00);
+  color: #fff;
+  border: none;
+  padding: 14px;
+  border-radius: 30px;
+  margin-top: 22px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.login-card button:hover {
+  opacity: 0.95;
+}
+
+.otp-box {
+  display: flex;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.otp-box input {
+  width: 48px;
+  height: 48px;
+  text-align: center;
+  font-size: 18px;
+  border-radius: 6px;
+}
+
+.footer-text {
+  font-size: 11px;
+  margin-top: 22px;
+  color: #7a7a7a;
+}
+
+/* RIGHT */
+.login-right {
+  width: 55%;
+  padding: 90px 80px;
+  background: linear-gradient(
+    180deg,
+    #f3f8fc 0%,
+    #e8f1f9 50%,
+    #dceaf6 100%
+  );
+}
+
+.login-right h1 {
+  font-size: 38px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.login-right p {
+  max-width: 620px;
+  line-height: 1.7;
+  color: #333;
+}
+
+.app-section {
+  display: flex;
+  gap: 22px;
+  margin-top: 42px;
+  align-items: center;
+}
+
+.qr {
+  width: 125px;
+}
+
+.app-text {
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.store-icons img {
+  width: 42px;
+  margin-right: 12px;
+}
+
+.ratings {
+  display: flex;
+  gap: 50px;
+  margin-top: 35px;
+}
+
+.ratings strong {
+  font-size: 22px;
+}
+
+.ratings span {
+  display: block;
+  font-size: 12px;
+  color: #555;
+}
+
+/* MOBILE */
+@media (max-width: 900px) {
+  .bajaj-login {
+    flex-direction: column;
+  }
+
+  .login-left,
+  .login-right {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .login-right {
+    padding-top: 30px;
+  }
+}
+
+.password-box {
+  position: relative;
+}
+
+.password-box span {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.switch-text {
+  margin-top: 16px;
+  font-size: 13px;
+  text-align: center;
+}
+
+.switch-text span {
+  color: #ff6a00;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* Better mobile handling */
+@media (max-width: 600px) {
+  .login-card {
+    width: 100%;
+    padding: 24px;
+  }
+
+  .login-right h1 {
+    font-size: 28px;
+  }
+}
