@@ -28,7 +28,7 @@ export default function ChangePassword() {
       setLoading(true);
 
       const res = await fetch(
-        "http://localhost:3000/api/admin/change-password",
+        "https://bajajpanel.online/api/admin/change-password",
         {
           method: "POST",
           headers: {
