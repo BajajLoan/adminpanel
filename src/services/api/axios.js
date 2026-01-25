@@ -36,7 +36,7 @@ api.interceptors.response.use(
       localStorage.removeItem("email");
 
       // force logout + redirect
-      window.location.href = "/signin";
+      window.location.href = "/login";
     }
 
     return Promise.reject(error);

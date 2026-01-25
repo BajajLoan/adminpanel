@@ -16,7 +16,7 @@ export const showSuccess = (message = "Success") => {
 };
 
 /* ERROR */
-export const showError = (message = "Something went wrong") => {
+export const showError = (message = "Admin not found") => {
   toast.error(message, toastOptions);
 };
 

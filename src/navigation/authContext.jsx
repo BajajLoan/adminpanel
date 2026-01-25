@@ -38,6 +38,7 @@ export const AuthProvider = ({ children }) => {
         loginAdmin,
         registerAdmin,
         logout,
+        setToken,
         loading
       }}
     >

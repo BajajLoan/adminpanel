@@ -33,9 +33,11 @@ export default function Login() {
      const res = await loginAdmin({ email, password });
 
       showSuccess(res.message);
+      console.log(res.message)
       navigate("/", { replace: true });
     } catch (err) {
-      showError(res.err);
+        console.log(err.message)
+      showError( "Admin not found");
     } finally {
       setLoading(false);
     }
