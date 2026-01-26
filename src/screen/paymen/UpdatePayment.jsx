@@ -24,9 +24,9 @@ export default function Payment() {
       const formData = new FormData();
       formData.append("upiId", upiId);
       formData.append("bankName", bankName);
-      formData.append("accountHolderName", bankAccountHolderName);
-      formData.append("accNumber", accNumber);
-      formData.append("ifscCode", ifscCode);
+      formData.append("accountHolder", bankAccountHolderName);
+      formData.append("accountNumber", accNumber);
+      formData.append("ifsc", ifscCode);
       formData.append("qrImage", qrImage);
 
       const res = await apiRequest("put", "/payment", formData);

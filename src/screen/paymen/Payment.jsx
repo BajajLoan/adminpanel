@@ -24,9 +24,9 @@ export default function Payment() {
       const formData = new FormData();
       formData.append("upiId", upiId);
       formData.append("bankName", bankName);
-      formData.append("accountHolderName", bankAccountHolderName);
+      formData.append("accountHolder", bankAccountHolderName);
       formData.append("accNumber", accNumber);
-      formData.append("ifscCode", ifscCode);
+      formData.append("ifsc", ifscCode);
       formData.append("qrImage", qrImage);
 
       const res = await apiRequest("post", "/payment", formData);
@@ -35,7 +35,7 @@ export default function Payment() {
         alert(res.message || "Something went wrong");
         return;
       }
-
+      console.log(res,"hello")
       alert("✅ Payment details saved successfully");
     } catch (error) {
       console.error(error);

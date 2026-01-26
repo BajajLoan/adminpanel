@@ -31,7 +31,7 @@ api.interceptors.response.use(
     console.error("API ERROR:", error?.response?.data);
 
     // 🔥 TOKEN INVALID / EXPIRED
-    if (status === 401 || message === "Invalid token") {
+    if (status === 401 || message === "Admin access denied") {
       localStorage.removeItem("token");
       localStorage.removeItem("email");
 
