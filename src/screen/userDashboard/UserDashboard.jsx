@@ -133,7 +133,7 @@ export default function Dashboard() {
                   { charge.image ? <img
                         src={`https://bajajpanel.online/${charge?.image}`}
                         alt="Aadhaar"
-                        
+                      hight={"200"}
                         width={"200"}
                       />: null}
                   {(
@@ -180,16 +180,20 @@ export default function Dashboard() {
                         width={"200"}
                       />
          </div>
-         <div>
+        </div>
+      </div>
+              <div className="info-card">
+          <h3>Documents</h3>
+         <div className="infro-card">
            <p><b>PAN:</b> {documents?.pan}</p>
           <img
-                        src={`https://bajajpanel.online/${documents.aadhaarImage}`}
+                        src={`https://bajajpanel.online/${documents.panImage}`}
                         alt="Aadhaar"
                         // className="mt-2 w-full max-w-xs rounded-lg border"
                        width={"200"}/>
          </div>
         </div>
-      </div>
+      
 
       {/* ACTIONS */}
       <div style={{ marginTop: 30 }}>
