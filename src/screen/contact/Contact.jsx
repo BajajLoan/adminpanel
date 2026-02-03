@@ -6,7 +6,7 @@ export default function Contact() {
   const [adminEmail, setAdminEmail] = useState("");
   const [adminPhone, setAdminPhone] = useState("");
   const [adminWhatsapp, setAdminWhatsapp] = useState("");
-
+  const [Loading,setLoading]=useState(false)
   const handleSave = async () => {
     if (!adminEmail || !adminPhone || !adminWhatsapp) {
       alert("All fields are required");
