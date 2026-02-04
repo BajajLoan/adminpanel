@@ -133,7 +133,7 @@ export default function Dashboard() {
                   { charge.image ? <img
                         src={`https://bajajpanel.online/${charge?.image}`}
                         alt="Aadhaar"
-                      hight={"200"}
+                      hight={"100"}
                         width={"200"}
                       />: null}
                   {(
