@@ -128,7 +128,7 @@ export default function Login() {
               : "LOGIN"}
           </button>
 
-          <p className="switch-text">
+          {/* <p className="switch-text">
             {isRegister ? (
               <>
                 Already have an account?{" "}
@@ -140,7 +140,7 @@ export default function Login() {
                 <span onClick={() => setIsRegister(true)}>Register</span>
               </>
             )}
-          </p>
+          </p> */}
 
           <p className="footer-text">
             Basic details of your relationship(s) including our group companies
