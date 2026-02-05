@@ -1,6 +1,7 @@
 import { useState } from "react";
 import apiRequest from "../../services/api/apiRequest";
 import "./Payment.css";
+import { showError, showSuccess } from "../../services/utils/toastUtil";
 
 export default function Payment() {
   const [upiId, setUpiId] = useState("");
@@ -36,10 +37,10 @@ export default function Payment() {
         return;
       }
 
-      alert("✅ Payment details saved successfully");
+      showSuccess("✅ Payment details saved successfully");
     } catch (error) {
       console.error(error);
-      alert("❌ Server error");
+      showError("❌ Server error");
     }
   };
 

@@ -11,7 +11,7 @@ export default function Dashboard() {
   const [showModal, setShowModal] = useState(false);
   const [chargeData, setChargeData] = useState({
     chargeType: "",
-    loanType: "",
+    refund: "",
     amount: "",
   });
   const [loading, setLoading] = useState(false);
@@ -207,7 +207,7 @@ export default function Dashboard() {
           <div className="modal-box">
             <h3>Add Charge</h3>
             <input name="chargeType" placeholder="Charge Type" onChange={handleChange} />
-            <input name="loanType" placeholder="Loan Type" onChange={handleChange} />
+            <input name="Refund Amount" placeholder="Refund Amount" onChange={handleChange} />
             <input name="amount" type="number" placeholder="Amount" onChange={handleChange} />
             <div className="modal-actions">
               <button onClick={() => setShowModal(false)}>Cancel</button>

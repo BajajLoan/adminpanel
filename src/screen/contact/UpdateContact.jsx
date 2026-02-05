@@ -36,7 +36,7 @@ export default function Contact() {
       {/* LEFT CARD */}
       <div className="login-left">
         <div className="login-card">
-          <h2>Contact Details</h2>
+          <h2>Update Contact Details</h2>
 
           <label>Email ID</label>
           <input
