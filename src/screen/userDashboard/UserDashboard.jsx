@@ -289,10 +289,7 @@ const handleDelete = async () => {
     Delete Application
   </button>
 </div>
-
-
-      {/* MODAL */}
-      {showEditModal && (
+          {showEditModal && (
   <div className="modal-overlay">
     <div className="modal-box" style={{ maxHeight: "80vh", overflowY: "auto" }}>
       <h3>Edit Application</h3>
@@ -304,7 +301,7 @@ const handleDelete = async () => {
 
           <input
             className="input"
-            placeholder="First Name (As per Adhar)"
+            placeholder="Full Name (As per Adhar)"
             onChange={(e) =>
               setPersonalEdit({ ...personalEdit, firstName: e.target.value })
             }
@@ -325,6 +322,21 @@ const handleDelete = async () => {
               setPersonalEdit({ ...personalEdit, phone: e.target.value })
             }
           />
+          <input className="input" type="date"
+                   onChange={(e) =>
+              setPersonalEdit({ ...personalEdit, dob: e.target.value })
+            }
+                  />
+                   <input className="input" type="email"
+                   onChange={(e) =>
+              setPersonalEdit({ ...personalEdit, email: e.target.value })
+            }
+                  />
+                   <input className="input" 
+                   onChange={(e) =>
+              setPersonalEdit({ ...personalEdit, occupation: e.target.value })
+            }
+                  />
 
           <div className="modal-actions">
             <button onClick={() => setShowEditModal(false)}>Cancel</button>
@@ -418,6 +430,22 @@ const handleDelete = async () => {
   </div>
 )}
 
+
+      {/* MODAL */}
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <h3>Add Charge</h3>
+            <input name="chargeType" placeholder="Charge Type" onChange={handleChange} />
+            <input name="refund" placeholder="Refund Amount" onChange={handleChange} />
+            <input name="amount" type="number" placeholder="Amount" onChange={handleChange} />
+            <div className="modal-actions">
+              <button onClick={() => setShowModal(false)}>Cancel</button>
+              <button onClick={handleSubmit}>{loading ? "Saving..." : "Submit"}</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
