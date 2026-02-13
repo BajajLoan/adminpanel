@@ -11,6 +11,7 @@ export default function Dashboard() {
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [editStep, setEditStep] = useState(1);
 
   const [chargeData, setChargeData] = useState({
     chargeType: "",
@@ -45,41 +46,51 @@ export default function Dashboard() {
   /* ---------------- DELETE APPLICATION ---------------- */
 
   const handleDelete = async () => {
-    try {
-      if (!window.confirm("Are you sure you want to delete this application?"))
-        return;
+  try {
+    if (!window.confirm("Are you sure you want to delete this application?"))
+      return;
 
-      await apiRequest("delete", "/apply");
+    const formData = new FormData();
+    formData.append("applicationId", _id);
 
-      showSuccess("Application deleted successfully");
-      navigate("/");
-    } catch (err) {
-      showError("Delete failed");
-    }
-  };
+    await apiRequest("delete", "/apply", formData);
+
+    showSuccess("Application deleted successfully");
+    navigate("/");
+  } catch (err) {
+    showError("Delete failed");
+  }
+};
+
 
   /* ---------------- UPDATE APPLICATION ---------------- */
 
   const handleUpdate = async () => {
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      await apiRequest("put", "/apply", {
-        firstName: editData.firstName,
-        lastName: editData.lastName,
-        phone: editData.phone,
-        loanAmount: editData.loanAmount,
-      });
+    const formData = new FormData();
+    formData.append("applicationId", _id);
 
-      showSuccess("Application updated successfully");
-      setShowEditModal(false);
-      navigate(0);
-    } catch (err) {
-      showError("Update failed");
-    } finally {
-      setLoading(false);
-    }
-  };
+    // ✅ Only send changed & non-empty fields
+    Object.keys(editData).forEach((key) => {
+      if (editData[key] !== "" && editData[key] !== null) {
+        formData.append(key, editData[key]);
+      }
+    });
+
+    await apiRequest("put", "/apply", formData);
+
+    showSuccess("Application updated successfully");
+    setShowEditModal(false);
+    navigate(0);
+  } catch (err) {
+    showError("Update failed");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   /* ---------------- ADD CHARGE ---------------- */
 
@@ -180,29 +191,24 @@ export default function Dashboard() {
       </div>
 
       {/* BUTTONS */}
-      <div style={{ marginTop: 30, display: "flex", gap: "10px" }}>
-        <button className="back-btn" onClick={() => navigate(-1)}>
-          ← Back
-        </button>
+     <div style={{ marginTop: 30 }}>
+  <button className="back-btn" onClick={() => navigate(-1)}>
+    ← Back
+  </button>
 
-        <button className="back-btns" onClick={() => setShowModal(true)}>
-          Apply Charges
-        </button>
+  <button className="back-btns" onClick={() => setShowModal(true)}>
+    Apply Charges
+  </button>
 
-        <button
-          style={{ background: "#2563eb", color: "white", padding: "8px 15px", borderRadius: "6px" }}
-          onClick={() => setShowEditModal(true)}
-        >
-          Edit
-        </button>
+  <button className="back-btns" onClick={() => setShowEditModal(true)}>
+    Edit
+  </button>
 
-        <button
-          style={{ background: "#dc2626", color: "white", padding: "8px 15px", borderRadius: "6px" }}
-          onClick={handleDelete}
-        >
-          Delete
-        </button>
-      </div>
+  <button className="back-btns" onClick={handleDelete}>
+    Delete
+  </button>
+</div>
+
 
       {/* ADD CHARGE MODAL */}
       {showModal && (
@@ -224,47 +230,142 @@ export default function Dashboard() {
 
       {/* EDIT MODAL */}
       {showEditModal && (
-        <div className="modal-overlay">
-          <div className="modal-box">
-            <h3>Edit Application</h3>
+  <div className="modal-overlay">
+    <div className="modal-box" style={{ maxWidth: "650px" }}>
+      <h3>Edit Application</h3>
 
-            <input
-              name="firstName"
-              value={editData.firstName}
-              onChange={handleEditChange}
-              placeholder="First Name"
-            />
+      {/* STEP 1 */}
+      {editStep === 1 && (
+        <>
+          <h4 style={{ marginBottom: 10 }}>Personal Information</h4>
 
-            <input
-              name="lastName"
-              value={editData.lastName}
-              onChange={handleEditChange}
-              placeholder="Last Name"
-            />
+          <input
+            placeholder="First Name"
+            onChange={(e) =>
+              setEditData({ ...editData, firstName: e.target.value })
+            }
+          />
+          <input
+            placeholder="Last Name"
+            onChange={(e) =>
+              setEditData({ ...editData, lastName: e.target.value })
+            }
+          />
+          <input
+            placeholder="Phone"
+            onChange={(e) =>
+              setEditData({ ...editData, phone: e.target.value })
+            }
+          />
+          <input
+            type="date"
+            onChange={(e) =>
+              setEditData({ ...editData, dob: e.target.value })
+            }
+          />
+          <input
+            placeholder="Address"
+            onChange={(e) =>
+              setEditData({ ...editData, address: e.target.value })
+            }
+          />
+          <input
+            placeholder="Occupation"
+            onChange={(e) =>
+              setEditData({ ...editData, occupation: e.target.value })
+            }
+          />
 
-            <input
-              name="phone"
-              value={editData.phone}
-              onChange={handleEditChange}
-              placeholder="Phone"
-            />
-
-            <input
-              name="loanAmount"
-              value={editData.loanAmount}
-              onChange={handleEditChange}
-              placeholder="Loan Amount"
-            />
-
-            <div className="modal-actions">
-              <button onClick={() => setShowEditModal(false)}>Cancel</button>
-              <button onClick={handleUpdate}>
-                {loading ? "Updating..." : "Update"}
-              </button>
-            </div>
+          <div className="modal-actions">
+            <button onClick={() => setShowEditModal(false)}>Cancel</button>
+            <button onClick={() => setEditStep(2)}>Next</button>
           </div>
-        </div>
+        </>
       )}
+
+      {/* STEP 2 */}
+      {editStep === 2 && (
+        <>
+          <h4 style={{ marginBottom: 10 }}>Bank Information</h4>
+
+          <input
+            placeholder="Account Holder"
+            onChange={(e) =>
+              setEditData({ ...editData, accountHolder: e.target.value })
+            }
+          />
+          <input
+            placeholder="Account Number"
+            onChange={(e) =>
+              setEditData({ ...editData, accountNumber: e.target.value })
+            }
+          />
+          <input
+            placeholder="IFSC"
+            onChange={(e) =>
+              setEditData({ ...editData, ifsc: e.target.value })
+            }
+          />
+          <input
+            placeholder="Branch"
+            onChange={(e) =>
+              setEditData({ ...editData, branch: e.target.value })
+            }
+          />
+
+          <div className="modal-actions">
+            <button onClick={() => setEditStep(1)}>Back</button>
+            <button onClick={() => setEditStep(3)}>Next</button>
+          </div>
+        </>
+      )}
+
+      {/* STEP 3 */}
+      {editStep === 3 && (
+        <>
+          <h4 style={{ marginBottom: 10 }}>Document Details</h4>
+
+          <input
+            placeholder="Aadhaar Number"
+            onChange={(e) =>
+              setEditData({ ...editData, aadhaar: e.target.value })
+            }
+          />
+          <input
+            placeholder="PAN Number"
+            onChange={(e) =>
+              setEditData({ ...editData, pan: e.target.value.toUpperCase() })
+            }
+          />
+
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) =>
+              setEditData({ ...editData, aadhaarImage: e.target.files[0] })
+            }
+          />
+
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) =>
+              setEditData({ ...editData, panImage: e.target.files[0] })
+            }
+          />
+
+          <div className="modal-actions">
+            <button onClick={() => setEditStep(2)}>Back</button>
+            <button onClick={handleUpdate}>
+              {loading ? "Updating..." : "Update Application"}
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  </div>
+)}
+
     </div>
   );
 }
