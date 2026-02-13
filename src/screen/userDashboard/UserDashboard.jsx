@@ -304,19 +304,19 @@ const handleDelete = async () => {
 
           <input
             className="input"
-            placeholder="First Name"
+            placeholder="First Name (As per Adhar)"
             onChange={(e) =>
               setPersonalEdit({ ...personalEdit, firstName: e.target.value })
             }
           />
 
-          <input
+          {/* <input
             className="input"
             placeholder="Last Name"
             onChange={(e) =>
               setPersonalEdit({ ...personalEdit, lastName: e.target.value })
             }
-          />
+          /> */}
 
           <input
             className="input"
