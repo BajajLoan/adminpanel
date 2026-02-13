@@ -9,91 +9,24 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   const [showModal, setShowModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [editStep, setEditStep] = useState(1);
-
   const [chargeData, setChargeData] = useState({
     chargeType: "",
     refund: "",
     amount: "",
   });
-
-  const [approved, setApproved] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [approved, setApproved] = useState({}); // ✅ FIX
 
   if (!state) return <p>No application data found</p>;
 
   const { _id, personal, loanType, bank, documents, charges } = state;
 
-  // ✅ Edit form state
-  const [editData, setEditData] = useState({
-    firstName: personal?.firstName || "",
-    lastName: personal?.lastName || "",
-    phone: personal?.phone || "",
-    loanAmount: loanType?.loanAmount || "",
-  });
-
-  /* ---------------- INPUT HANDLERS ---------------- */
-
+  /* 🔹 HANDLE INPUT */
   const handleChange = (e) => {
     setChargeData({ ...chargeData, [e.target.name]: e.target.value });
   };
 
-  const handleEditChange = (e) => {
-    setEditData({ ...editData, [e.target.name]: e.target.value });
-  };
-
-  /* ---------------- DELETE APPLICATION ---------------- */
-
-  const handleDelete = async () => {
-  try {
-    if (!window.confirm("Are you sure you want to delete this application?"))
-      return;
-
-    const formData = new FormData();
-    formData.append("applicationId", _id);
-
-    await apiRequest("delete", "/apply", formData);
-
-    showSuccess("Application deleted successfully");
-    navigate("/");
-  } catch (err) {
-    showError("Delete failed");
-  }
-};
-
-
-  /* ---------------- UPDATE APPLICATION ---------------- */
-
-  const handleUpdate = async () => {
-  try {
-    setLoading(true);
-
-    const formData = new FormData();
-    formData.append("applicationId", _id);
-
-    // ✅ Only send changed & non-empty fields
-    Object.keys(editData).forEach((key) => {
-      if (editData[key] !== "" && editData[key] !== null) {
-        formData.append(key, editData[key]);
-      }
-    });
-
-    await apiRequest("put", "/apply", formData);
-
-    showSuccess("Application updated successfully");
-    setShowEditModal(false);
-    navigate(0);
-  } catch (err) {
-    showError("Update failed");
-  } finally {
-    setLoading(false);
-  }
-};
-
-
-  /* ---------------- ADD CHARGE ---------------- */
-
+  /* 🔹 ADD CHARGE */
   const handleSubmit = async () => {
     try {
       setLoading(true);
@@ -101,40 +34,42 @@ export default function Dashboard() {
         applicationId: _id,
         ...chargeData,
       });
-
-      showSuccess("Charge added successfully");
+      // alert("Charge added successfully");
+      showSuccess("Charge added successfully")
       setShowModal(false);
-      navigate(0);
+      navigate("/")
     } catch (err) {
-      showError("Failed to add charge");
+      // alert("Failed to add charge");
+      showError("Failed to add charge")
     } finally {
       setLoading(false);
     }
   };
 
-  /* ---------------- APPROVE CHARGE ---------------- */
-
+  /* 🔹 APPROVE CHARGE */
   const handleApprove = async (chargeId) => {
-    try {
-      const approvalValue = approved[chargeId] ? 1 : 0;
+  try {
+    const approvalValue = approved[chargeId] ? 1 : 0; // ✅ checkbox based
 
-      await apiRequest("put", "/charge-approval", {
-        applicationId: _id,
-        chargeId,
-        approval: approvalValue,
-      });
+    await apiRequest("put", "/charge-approval", {
+      applicationId: _id,
+      chargeId,
+      approval: approvalValue,
+    });
 
-      showSuccess(
-        approvalValue === 1 ? "Charge approved" : "Charge unapproved"
-      );
-      navigate(0);
-    } catch (err) {
-      showError("Approval failed");
-    }
-  };
+    
+    showSuccess(approvalValue === 1 ? "Charge approved" : "Charge unapproved")
+    navigate(0)
+  } catch (err) {
+    
+    showError("Approval failed")
+  }
+};
+
 
   return (
     <div className="dashboard-wrapper">
+      {/* HEADER */}
       <div className="top-card">
         <h2>Application Details</h2>
         <span>Application ID: {_id}</span>
@@ -144,73 +79,129 @@ export default function Dashboard() {
         {/* LOAN */}
         <div className="info-card">
           <h3>Loan Details</h3>
-          <p><b>Loan Type:</b> {loanType?.loanName}</p>
-          <p><b>Amount:</b> ₹{loanType?.loanAmount}</p>
-          <p><b>Tenure:</b> {loanType?.tenure}</p>
+          <div className="info-grid">
+            <p><b>Loan Type:</b> {loanType?.loanName}</p>
+            <p><b>Amount:</b> ₹{loanType?.loanAmount}</p>
+            <p><b>Tenure:</b> {loanType?.tenure}</p>
+          </div>
         </div>
 
         {/* PERSONAL */}
         <div className="info-card">
           <h3>Personal Details</h3>
-          <p><b>Name:</b> {personal?.firstName} {personal?.lastName}</p>
-          <p><b>Email:</b> {personal?.email}</p>
-          <p><b>Phone:</b> {personal?.phone}</p>
+          <div className="info-grid">
+            <p><b>Name:</b> {personal?.firstName} {personal?.lastName}</p>
+            <p><b>Email:</b> {personal?.email}</p>
+            <p><b>Phone:</b> {personal?.phone}</p>
+          </div>
         </div>
 
         {/* BANK */}
         <div className="info-card">
           <h3>Bank Details</h3>
-          <p><b>Account:</b> {bank?.accountNumber}</p>
-          <p><b>IFSC:</b> {bank?.ifsc}</p>
+          <div className="info-grid">
+            <p><b>Bank:</b> {bank?.bankName}</p>
+            <p><b>Account:</b> {bank?.accountNumber}</p>
+            <p><b>IFSC:</b> {bank?.ifsc}</p>
+          </div>
         </div>
+
+        {/* CHARGES */}
+        {Array.isArray(charges) && charges.length > 0 && (
+          <div className="info-card">
+            <h3>Charged Amount</h3>
+
+            {charges.map((charge) => {
+              const isChecked = approved[charge._id] || false;
+              const isApproved = charge?.approval === 1;
+
+              return (
+                <div key={charge._id} className="info-grid" style={{ marginBottom: "16px" }}>
+                  <p><b>Charge:</b> {charge.chargeType}</p>
+                  <p><b>Amount:</b> ₹{charge.amount}</p>
+
+                 {isApproved && (
+  <p>
+    <b>Status:</b>{" "}
+    <span style={{ color: "green", fontWeight: "600" }}>
+      Approved
+    </span>
+  </p>
+)}
+
+
+                  { charge.image ? <img
+                        src={`https://bajajpanel.online/${charge?.image}`}
+                        alt="Aadhaar"
+                      hight={"100"}
+                        width={"200"}
+                      />: null}
+                  {(
+                    <div className="flex items-center gap-4 mt-2">
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={(e) =>
+                          setApproved({
+                            ...approved,
+                            [charge._id]: e.target.checked,
+                          })
+                        }
+                      />
+
+                      <button
+                        // disabled={!isChecked}
+                        className={`px-5 py-2 rounded-full ${
+                          isChecked
+                            ? "bg-green-600 text-white"
+                            : "bg-gray-300 text-gray-500"
+                        }`}
+                        onClick={() => handleApprove(charge._id)}
+                      >
+                        Approve
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
 
         {/* DOCUMENTS */}
         <div className="info-card">
-          <h3>Aadhaar</h3>
-          <p>{documents?.aadhaar}</p>
-          {documents?.aadhaarImage && (
-            <img
-              src={`https://bajajpanel.online/${documents.aadhaarImage}`}
-              width="200"
-              alt="aadhaar"
-            />
-          )}
-        </div>
-
-        <div className="info-card">
-          <h3>PAN</h3>
-          <p>{documents?.pan}</p>
-          {documents?.panImage && (
-            <img
-              src={`https://bajajpanel.online/${documents.panImage}`}
-              width="200"
-              alt="pan"
-            />
-          )}
+          <h3>Documents</h3>
+         <div className="infro-card">
+           <p><b>Aadhaar:</b> {documents?.aadhaar}</p>
+          <img
+                        src={`https://bajajpanel.online/${documents.aadhaarImage}`}
+                        alt="Aadhaar"
+                        // className="mt-2 w-[20px]  rounded-lg border"
+                        width={"200"}
+                      />
+         </div>
         </div>
       </div>
+              <div className="info-card">
+          <h3>Documents</h3>
+         <div className="infro-card">
+           <p><b>PAN:</b> {documents?.pan}</p>
+          <img
+                        src={`https://bajajpanel.online/${documents.panImage}`}
+                        alt="Aadhaar"
+                        // className="mt-2 w-full max-w-xs rounded-lg border"
+                       width={"200"}/>
+         </div>
+        </div>
+      
 
-      {/* BUTTONS */}
-     <div style={{ marginTop: 30 }}>
-  <button className="back-btn" onClick={() => navigate(-1)}>
-    ← Back
-  </button>
+      {/* ACTIONS */}
+      <div style={{ marginTop: 30 }}>
+        <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
+        <button className="back-btns" onClick={() => setShowModal(true)}>Apply Charges</button>
+      </div>
 
-  <button className="back-btns" onClick={() => setShowModal(true)}>
-    Apply Charges
-  </button>
-
-  <button className="back-btns" onClick={() => setShowEditModal(true)}>
-    Edit
-  </button>
-
-  <button className="back-btns" onClick={handleDelete}>
-    Delete
-  </button>
-</div>
-
-
-      {/* ADD CHARGE MODAL */}
+      {/* MODAL */}
       {showModal && (
         <div className="modal-overlay">
           <div className="modal-box">
@@ -220,152 +211,12 @@ export default function Dashboard() {
             <input name="amount" type="number" placeholder="Amount" onChange={handleChange} />
             <div className="modal-actions">
               <button onClick={() => setShowModal(false)}>Cancel</button>
-              <button onClick={handleSubmit}>
-                {loading ? "Saving..." : "Submit"}
-              </button>
+              <button onClick={handleSubmit}>{loading ? "Saving..." : "Submit"}</button>
             </div>
           </div>
         </div>
       )}
-
-      {/* EDIT MODAL */}
-      {showEditModal && (
-  <div className="modal-overlay">
-    <div className="modal-box" style={{ maxWidth: "650px" }}>
-      <h3>Edit Application</h3>
-
-      {/* STEP 1 */}
-      {editStep === 1 && (
-        <>
-          <h4 style={{ marginBottom: 10 }}>Personal Information</h4>
-
-          <input
-            placeholder="First Name"
-            onChange={(e) =>
-              setEditData({ ...editData, firstName: e.target.value })
-            }
-          />
-          <input
-            placeholder="Last Name"
-            onChange={(e) =>
-              setEditData({ ...editData, lastName: e.target.value })
-            }
-          />
-          <input
-            placeholder="Phone"
-            onChange={(e) =>
-              setEditData({ ...editData, phone: e.target.value })
-            }
-          />
-          <input
-            type="date"
-            onChange={(e) =>
-              setEditData({ ...editData, dob: e.target.value })
-            }
-          />
-          <input
-            placeholder="Address"
-            onChange={(e) =>
-              setEditData({ ...editData, address: e.target.value })
-            }
-          />
-          <input
-            placeholder="Occupation"
-            onChange={(e) =>
-              setEditData({ ...editData, occupation: e.target.value })
-            }
-          />
-
-          <div className="modal-actions">
-            <button onClick={() => setShowEditModal(false)}>Cancel</button>
-            <button onClick={() => setEditStep(2)}>Next</button>
-          </div>
-        </>
-      )}
-
-      {/* STEP 2 */}
-      {editStep === 2 && (
-        <>
-          <h4 style={{ marginBottom: 10 }}>Bank Information</h4>
-
-          <input
-            placeholder="Account Holder"
-            onChange={(e) =>
-              setEditData({ ...editData, accountHolder: e.target.value })
-            }
-          />
-          <input
-            placeholder="Account Number"
-            onChange={(e) =>
-              setEditData({ ...editData, accountNumber: e.target.value })
-            }
-          />
-          <input
-            placeholder="IFSC"
-            onChange={(e) =>
-              setEditData({ ...editData, ifsc: e.target.value })
-            }
-          />
-          <input
-            placeholder="Branch"
-            onChange={(e) =>
-              setEditData({ ...editData, branch: e.target.value })
-            }
-          />
-
-          <div className="modal-actions">
-            <button onClick={() => setEditStep(1)}>Back</button>
-            <button onClick={() => setEditStep(3)}>Next</button>
-          </div>
-        </>
-      )}
-
-      {/* STEP 3 */}
-      {editStep === 3 && (
-        <>
-          <h4 style={{ marginBottom: 10 }}>Document Details</h4>
-
-          <input
-            placeholder="Aadhaar Number"
-            onChange={(e) =>
-              setEditData({ ...editData, aadhaar: e.target.value })
-            }
-          />
-          <input
-            placeholder="PAN Number"
-            onChange={(e) =>
-              setEditData({ ...editData, pan: e.target.value.toUpperCase() })
-            }
-          />
-
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) =>
-              setEditData({ ...editData, aadhaarImage: e.target.files[0] })
-            }
-          />
-
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) =>
-              setEditData({ ...editData, panImage: e.target.files[0] })
-            }
-          />
-
-          <div className="modal-actions">
-            <button onClick={() => setEditStep(2)}>Back</button>
-            <button onClick={handleUpdate}>
-              {loading ? "Updating..." : "Update Application"}
-            </button>
-          </div>
-        </>
-      )}
-    </div>
-  </div>
-)}
-
     </div>
   );
 }
+
