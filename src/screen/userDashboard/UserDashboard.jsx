@@ -16,6 +16,15 @@ export default function Dashboard() {
   });
   const [loading, setLoading] = useState(false);
   const [approved, setApproved] = useState({}); // ✅ FIX
+  const [showEditModal, setShowEditModal] = useState(false);
+const [step, setStep] = useState(1);
+
+const [personalEdit, setPersonalEdit] = useState({});
+const [bankEdit, setBankEdit] = useState({});
+const [documentsEdit, setDocumentsEdit] = useState({});
+
+const [aadhaarImageFile, setAadhaarImageFile] = useState(null);
+const [panImageFile, setPanImageFile] = useState(null);
 
   if (!state) return <p>No application data found</p>;
 
@@ -65,6 +74,67 @@ export default function Dashboard() {
     showError("Approval failed")
   }
 };
+const handleDelete = async () => {
+  try {
+    if (!window.confirm("Are you sure you want to delete this application?"))
+      return;
+
+    await apiRequest("delete", "/apply", {
+      applicationId: _id,
+    });
+
+    showSuccess("Application deleted successfully");
+    navigate("/");
+  } catch (err) {
+    showError("Delete failed");
+  }
+};
+
+
+
+  const handleUpdate = async () => {
+  try {
+    const formData = new FormData();
+
+    // Personal Fields
+    Object.entries(personalEdit).forEach(([key, value]) => {
+      if (value !== "" && value !== undefined && value !== null) {
+        formData.append(key, value);
+      }
+    });
+
+    // Bank Fields
+    Object.entries(bankEdit).forEach(([key, value]) => {
+      if (value !== "" && value !== undefined && value !== null) {
+        formData.append(key, value);
+      }
+    });
+
+    // Document Fields
+    Object.entries(documentsEdit).forEach(([key, value]) => {
+      if (value !== "" && value !== undefined && value !== null) {
+        formData.append(key, value);
+      }
+    });
+
+    if (aadhaarImageFile) {
+      formData.append("aadhaarImage", aadhaarImageFile);
+    }
+
+    if (panImageFile) {
+      formData.append("panImage", panImageFile);
+    }
+
+    await apiRequest("put", "/apply", formData);
+
+    showSuccess("Application updated successfully");
+    setShowEditModal(false);
+    navigate(0);
+  } catch (err) {
+    showError("Update failed");
+  }
+};
+
 
 
   return (
@@ -197,25 +267,157 @@ export default function Dashboard() {
 
       {/* ACTIONS */}
       <div style={{ marginTop: 30 }}>
-        <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
-        <button className="back-btns" onClick={() => setShowModal(true)}>Apply Charges</button>
-      </div>
+  <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
+
+  <button className="back-btns" onClick={() => setShowModal(true)}>
+    Apply Charges
+  </button>
+
+  <button
+    className="back-btns"
+    style={{ marginLeft: "10px", background: "#2563eb", color: "#fff" }}
+    onClick={() => setShowEditModal(true)}
+  >
+    Edit Application
+  </button>
+
+  <button
+    className="back-btns"
+    style={{ marginLeft: "10px", background: "#dc2626", color: "#fff" }}
+    onClick={handleDelete}
+  >
+    Delete Application
+  </button>
+</div>
+
 
       {/* MODAL */}
-      {showModal && (
-        <div className="modal-overlay">
-          <div className="modal-box">
-            <h3>Add Charge</h3>
-            <input name="chargeType" placeholder="Charge Type" onChange={handleChange} />
-            <input name="refund" placeholder="Refund Amount" onChange={handleChange} />
-            <input name="amount" type="number" placeholder="Amount" onChange={handleChange} />
-            <div className="modal-actions">
-              <button onClick={() => setShowModal(false)}>Cancel</button>
-              <button onClick={handleSubmit}>{loading ? "Saving..." : "Submit"}</button>
-            </div>
+      {showEditModal && (
+  <div className="modal-overlay">
+    <div className="modal-box" style={{ maxHeight: "80vh", overflowY: "auto" }}>
+      <h3>Edit Application</h3>
+
+      {/* STEP 1 */}
+      {step === 1 && (
+        <>
+          <h4>Personal Information</h4>
+
+          <input
+            className="input"
+            placeholder="First Name"
+            onChange={(e) =>
+              setPersonalEdit({ ...personalEdit, firstName: e.target.value })
+            }
+          />
+
+          <input
+            className="input"
+            placeholder="Last Name"
+            onChange={(e) =>
+              setPersonalEdit({ ...personalEdit, lastName: e.target.value })
+            }
+          />
+
+          <input
+            className="input"
+            placeholder="Phone"
+            onChange={(e) =>
+              setPersonalEdit({ ...personalEdit, phone: e.target.value })
+            }
+          />
+
+          <div className="modal-actions">
+            <button onClick={() => setShowEditModal(false)}>Cancel</button>
+            <button onClick={() => setStep(2)}>Next</button>
           </div>
-        </div>
+        </>
       )}
+
+      {/* STEP 2 */}
+      {step === 2 && (
+        <>
+          <h4>Bank Information</h4>
+
+          <input
+            className="input"
+            placeholder="Account Holder"
+            onChange={(e) =>
+              setBankEdit({ ...bankEdit, accountHolder: e.target.value })
+            }
+          />
+
+          <input
+            className="input"
+            placeholder="Account Number"
+            onChange={(e) =>
+              setBankEdit({ ...bankEdit, accountNumber: e.target.value })
+            }
+          />
+
+          <input
+            className="input"
+            placeholder="IFSC"
+            onChange={(e) =>
+              setBankEdit({ ...bankEdit, ifsc: e.target.value })
+            }
+          />
+
+          <div className="modal-actions">
+            <button onClick={() => setStep(1)}>Back</button>
+            <button onClick={() => setStep(3)}>Next</button>
+          </div>
+        </>
+      )}
+
+      {/* STEP 3 */}
+      {step === 3 && (
+        <>
+          <h4>Documents</h4>
+
+          <input
+            className="input"
+            placeholder="Aadhaar"
+            onChange={(e) =>
+              setDocumentsEdit({
+                ...documentsEdit,
+                aadhaar: e.target.value,
+              })
+            }
+          />
+
+          <input
+            className="input"
+            placeholder="PAN"
+            onChange={(e) =>
+              setDocumentsEdit({
+                ...documentsEdit,
+                pan: e.target.value,
+              })
+            }
+          />
+
+          <input
+            type="file"
+            className="input"
+            onChange={(e) => setAadhaarImageFile(e.target.files[0])}
+          />
+
+          <input
+            type="file"
+            className="input"
+            onChange={(e) => setPanImageFile(e.target.files[0])}
+          />
+
+          <div className="modal-actions">
+            <button onClick={() => setStep(2)}>Back</button>
+            <button onClick={handleUpdate}>Update</button>
+          </div>
+        </>
+      )}
+    </div>
+  </div>
+)}
+
     </div>
   );
 }
