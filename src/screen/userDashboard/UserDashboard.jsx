@@ -96,6 +96,9 @@ const handleDelete = async () => {
   try {
     const formData = new FormData();
 
+    // ✅ IMPORTANT
+    formData.append("applicationId", _id);
+
     // Personal Fields
     Object.entries(personalEdit).forEach(([key, value]) => {
       if (value !== "" && value !== undefined && value !== null) {
@@ -131,9 +134,11 @@ const handleDelete = async () => {
     setShowEditModal(false);
     navigate(0);
   } catch (err) {
+    console.log(err);
     showError("Update failed");
   }
 };
+
 
 
 
@@ -322,17 +327,17 @@ const handleDelete = async () => {
               setPersonalEdit({ ...personalEdit, phone: e.target.value })
             }
           />
-          <input className="input" type="date"
+          <input className="input" placeholder="date of birth" type="date"
                    onChange={(e) =>
               setPersonalEdit({ ...personalEdit, dob: e.target.value })
             }
                   />
-                   <input className="input" type="email"
+                   <input className="input" placeholder="email" type="email"
                    onChange={(e) =>
               setPersonalEdit({ ...personalEdit, email: e.target.value })
             }
                   />
-                   <input className="input" 
+                   <input className="input" placeholder="occupation"
                    onChange={(e) =>
               setPersonalEdit({ ...personalEdit, occupation: e.target.value })
             }
