@@ -188,7 +188,7 @@ const handleDelete = async () => {
 
             {charges.map((charge) => {
               const isChecked = approved[charge._id] || false;
-              const isApproved = charge?.approval === 1;
+              const isApproved = charge?.approval === 1 ? true : false;
 
               return (
                 <div key={charge._id} className="info-grid" style={{ marginBottom: "16px" }}>
