@@ -378,6 +378,13 @@ const handleDelete = async () => {
               setBankEdit({ ...bankEdit, ifsc: e.target.value })
             }
           />
+          <input
+            className="input"
+            placeholder="Annual Income"
+            onChange={(e) =>
+              setBankEdit({ ...bankEdit, annual: e.target.value })
+            }
+          />
 
           <div className="modal-actions">
             <button onClick={() => setStep(1)}>Back</button>
