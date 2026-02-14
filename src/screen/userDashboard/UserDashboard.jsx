@@ -168,6 +168,7 @@ const handleDelete = async () => {
             <p><b>Name:</b> {personal?.firstName} {personal?.lastName}</p>
             <p><b>Email:</b> {personal?.email}</p>
             <p><b>Phone:</b> {personal?.phone}</p>
+            <p><b>Occupation:</b> {personal?.occupation}</p>
           </div>
         </div>
 
@@ -178,6 +179,7 @@ const handleDelete = async () => {
             <p><b>Bank:</b> {bank?.bankName}</p>
             <p><b>Account:</b> {bank?.accountNumber}</p>
             <p><b>IFSC:</b> {bank?.ifsc}</p>
+            <p><b>Annual:</b> {bank?.annual}</p>
           </div>
         </div>
 
