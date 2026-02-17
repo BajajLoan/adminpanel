@@ -9,6 +9,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   const [showModal, setShowModal] = useState(false);
+  const [isShowModal, setIsShowModal] = useState(false);
   const [chargeData, setChargeData] = useState({
     chargeType: "",
     refund: "",
@@ -35,6 +36,24 @@ const [panImageFile, setPanImageFile] = useState(null);
     setChargeData({ ...chargeData, [e.target.name]: e.target.value });
   };
 
+
+  const handleDeleteCharge = async (chargeId) => {
+  try {
+    if (!window.confirm("Are you sure you want to delete this charge?"))
+      return;
+
+    await apiRequest("delete", "/delete-charge", {
+      applicationId: _id,
+      chargeId,
+    });
+
+    showSuccess("Charge deleted successfully");
+    navigate(0);
+  } catch (err) {
+    showError("Delete failed");
+  }
+};
+
   /* 🔹 ADD CHARGE */
   const handleSubmit = async () => {
     try {
@@ -52,6 +71,24 @@ const [panImageFile, setPanImageFile] = useState(null);
       showError("Failed to add charge")
     } finally {
       setLoading(false);
+    }
+  };
+  const handleUpdateCharges = async () => {
+    try {
+      // setLoading(true);
+      await apiRequest("put", "/update-charge", {
+        applicationId: _id,
+        ...chargeData,
+      });
+      // alert("Charge added successfully");
+      showSuccess("Charge added successfully")
+      setShowModal(false);
+      navigate("/")
+    } catch (err) {
+      // alert("Failed to add charge");
+      showError("Failed to add charge")
+    } finally {
+      // setLoading(false);
     }
   };
 
@@ -157,6 +194,7 @@ const handleDelete = async () => {
           <div className="info-grid">
             <p><b>Loan Type:</b> {loanType?.loanName}</p>
             <p><b>Amount:</b> ₹{loanType?.loanAmount}</p>
+            <p><b>EMI:</b> {loanType?.emi}</p>
             <p><b>Tenure:</b> {loanType?.tenure}</p>
           </div>
         </div>
@@ -196,6 +234,20 @@ const handleDelete = async () => {
                 <div key={charge._id} className="info-grid" style={{ marginBottom: "16px" }}>
                   <p><b>Charge:</b> {charge.chargeType}</p>
                   <p><b>Amount:</b> ₹{charge.amount}</p>
+                   <div style={{ display: "flex", gap: "10px" }}>
+  <button className="back-btns" onClick={() => setIsShowModal(true)}>
+    Edit Charges
+  </button>
+
+  <button
+    className="back-btns"
+    style={{ background: "#dc2626", color: "#fff" }}
+    onClick={() => handleDeleteCharge(charge._id)}
+  >
+    Delete Charge
+  </button>
+</div>
+
 
                  {isApproved && (
   <p>
@@ -456,6 +508,20 @@ const handleDelete = async () => {
             <div className="modal-actions">
               <button onClick={() => setShowModal(false)}>Cancel</button>
               <button onClick={handleSubmit}>{loading ? "Saving..." : "Submit"}</button>
+            </div>
+          </div>
+        </div>
+      )}
+       {isShowModal && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <h3>Update Charge</h3>
+            <input name="chargeType" placeholder="Charge Type" onChange={handleChange} />
+            <input name="refund" placeholder="Refund Amount" onChange={handleChange} />
+            <input name="amount" type="number" placeholder="Amount" onChange={handleChange} />
+            <div className="modal-actions">
+              <button onClick={() => setIsShowModal(false)}>Cancel</button>
+              <button onClick={handleUpdateCharges}>{loading ? "Saving..." : "Submit"}</button>
             </div>
           </div>
         </div>
