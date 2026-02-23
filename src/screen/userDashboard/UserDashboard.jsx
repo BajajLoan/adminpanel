@@ -73,15 +73,13 @@ const [panImageFile, setPanImageFile] = useState(null);
       setLoading(false);
     }
   };
-  const handleUpdateCharges = async () => {
+  const handleUpdateCharges = async (chargeId) => {
     try {
       // setLoading(true);
       await apiRequest("put", "/update-charge", {
   applicationId,
-  chargeId,   // ❗ ye missing hai
-  chargeType,
-  amount,
-  refund
+  chargeId,   
+  ...chargeData,
 });
       // alert("Charge added successfully");
       showSuccess("Charge added successfully")
