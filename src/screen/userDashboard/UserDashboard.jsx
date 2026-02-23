@@ -77,9 +77,12 @@ const [panImageFile, setPanImageFile] = useState(null);
     try {
       // setLoading(true);
       await apiRequest("put", "/update-charge", {
-        applicationId: _id,
-        ...chargeData,
-      });
+  applicationId,
+  chargeId,   // ❗ ye missing hai
+  chargeType,
+  amount,
+  refund
+});
       // alert("Charge added successfully");
       showSuccess("Charge added successfully")
       setShowModal(false);
