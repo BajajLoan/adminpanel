@@ -23,12 +23,15 @@ export default function Payment() {
   const handleSave = async () => {
     try {
       const formData = new FormData();
-      formData.append("upiId", upiId);
-      formData.append("bankName", bankName);
-      formData.append("accountHolder", bankAccountHolderName);
-      formData.append("accountNumber", accNumber);
-      formData.append("ifsc", ifscCode);
-      formData.append("qrImage", qrImage);
+
+      // ✅ Only append if value exists
+      if (upiId) formData.append("upiId", upiId);
+      if (bankName) formData.append("bankName", bankName);
+      if (bankAccountHolderName)
+        formData.append("accountHolder", bankAccountHolderName);
+      if (accNumber) formData.append("accountNumber", accNumber);
+      if (ifscCode) formData.append("ifsc", ifscCode);
+      if (qrImage) formData.append("qrImage", qrImage);
 
       const res = await apiRequest("put", "/payment", formData);
 

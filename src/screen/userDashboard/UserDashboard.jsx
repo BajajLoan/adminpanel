@@ -23,7 +23,7 @@ const [step, setStep] = useState(1);
 const [personalEdit, setPersonalEdit] = useState({});
 const [bankEdit, setBankEdit] = useState({});
 const [documentsEdit, setDocumentsEdit] = useState({});
-
+const [selectedChargeId, setSelectedChargeId] = useState(null);
 const [aadhaarImageFile, setAadhaarImageFile] = useState(null);
 const [panImageFile, setPanImageFile] = useState(null);
 
@@ -79,9 +79,7 @@ const [panImageFile, setPanImageFile] = useState(null);
       await apiRequest("put", "/update-charge", {
   applicationId: _id,
   chargeId,  
-  chargeType,
-  amount,
-  refund
+  ...chargeData,
 });
       // alert("Charge added successfully");
       showSuccess("Charge added successfully")
@@ -238,7 +236,13 @@ const handleDelete = async () => {
                   <p><b>Charge:</b> {charge.chargeType}</p>
                   <p><b>Amount:</b> ₹{charge.amount}</p>
                    <div style={{ display: "flex", gap: "10px" }}>
-  <button className="back-btns" onClick={() => setIsShowModal(true)}>
+  <button
+  className="back-btns"
+  onClick={() => {
+    setSelectedChargeId(charge._id);  // ✅ id store
+    setIsShowModal(true);
+  }}
+>
     Edit Charges
   </button>
 
@@ -524,7 +528,7 @@ const handleDelete = async () => {
             <input name="amount" type="number" placeholder="Amount" onChange={handleChange} />
             <div className="modal-actions">
               <button onClick={() => setIsShowModal(false)}>Cancel</button>
-              <button onClick={handleUpdateCharges}>{loading ? "Saving..." : "Submit"}</button>
+              <button onClick={() => handleUpdateCharges(selectedChargeId)}>{loading ? "Saving..." : "Submit"}</button>
             </div>
           </div>
         </div>
