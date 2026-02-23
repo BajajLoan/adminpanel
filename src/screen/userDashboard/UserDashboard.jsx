@@ -77,8 +77,8 @@ const [panImageFile, setPanImageFile] = useState(null);
     try {
       // setLoading(true);
       await apiRequest("put", "/update-charge", {
-  applicationId,
-  chargeId,   // ❗ ye missing hai
+  applicationId: _id,
+  chargeId,  
   chargeType,
   amount,
   refund
