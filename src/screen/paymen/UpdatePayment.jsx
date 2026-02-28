@@ -24,23 +24,35 @@ export default function Payment() {
     try {
       const formData = new FormData();
 
-      // ✅ Only append if value exists
-      if (upiId) formData.append("upiId", upiId);
-      if (bankName) formData.append("bankName", bankName);
-      if (bankAccountHolderName)
-        formData.append("accountHolder", bankAccountHolderName);
-      if (accNumber) formData.append("accountNumber", accNumber);
-      if (ifscCode) formData.append("ifsc", ifscCode);
-      if (qrImage) formData.append("qrImage", qrImage);
+      // ✅ Only append if value exists AND not empty
+      if (upiId.trim() !== "") formData.append("upiId", upiId.trim());
+      if (bankName.trim() !== "") formData.append("bankName", bankName.trim());
+      if (bankAccountHolderName.trim() !== "")
+        formData.append("accountHolder", bankAccountHolderName.trim());
+      if (accNumber.trim() !== "")
+        formData.append("accountNumber", accNumber.trim());
+      if (ifscCode.trim() !== "")
+        formData.append("ifsc", ifscCode.trim());
+
+      if (qrImage instanceof File) {
+        formData.append("qrImage", qrImage);
+      }
+
+      // ❗ If nothing selected
+      if ([...formData.keys()].length === 0) {
+        showError("⚠️ No field selected for update");
+        return;
+      }
 
       const res = await apiRequest("put", "/payment", formData);
 
-      if (!res.ok) {
-        alert(res.message || "Something went wrong");
+      if (!res.success) {
+        showError(res.message || "Something went wrong");
         return;
       }
 
       showSuccess("✅ Payment details saved successfully");
+
     } catch (error) {
       console.error(error);
       showError("❌ Server error");
